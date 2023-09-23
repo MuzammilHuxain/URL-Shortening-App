@@ -137,7 +137,7 @@ ul li:hover {
 }
 
 .decsription h1 {
-    font-size: 4em;
+    font-size: 3em;
 
 }
 
@@ -411,6 +411,10 @@ footer {
         width: 100%;
     }
 
+
+    .decsription h1{
+        font-size: 3rem;
+    }
     ul li {
         margin: .5rem;
     }

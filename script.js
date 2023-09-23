@@ -28,14 +28,12 @@ let shortOriginalLink = () => {
 
         error.style.display = "block"
         error.textContent = "Please add a link";
-        return;
-    }
 
+        setTimeout(() => {
+            error.style.display = "none"
+            error.textContent = "";
+        }, 3000)
 
-    if (!userlink.value.includes(".com")) {
-
-        error.style.display = "block"
-        error.textContent = "Invalid url";
         return;
     }
 
@@ -43,29 +41,9 @@ let shortOriginalLink = () => {
     res.then((res) => {
 
 
-        //resetting copy link button background
-        let links = document.querySelectorAll("#copy-link");
-
-        links.forEach(element => {
-            element.textContent = "Copy";
-            element.style.backgroundColor = "Cyan";
-        });
-
-
-        hideError();
 
         let shortenLink;
         shortenLink = res.result.full_short_link;
-
-        // Retrieve the existing links array from Local Storage
-        storedLinks = JSON.parse(localStorage.getItem("storedLinks")) || [];
-
-        // Add the new link and original link to the array
-        storedLinks.push({ shortLink: shortenLink, originalLink: userlink.value });
-
-        // Save the updated array back to Local Storage
-        localStorage.setItem("storedLinks", JSON.stringify(storedLinks));
-
 
 
         let template = document.querySelector(".template");
@@ -90,14 +68,15 @@ let shortOriginalLink = () => {
 
             error.style.display = "block"
             error.textContent = "Something went wrong";
+
+
+
+            setTimeout(() => {
+                error.style.display = "none"
+                error.textContent = "";
+            }, 3000)
         });
 
-}
-
-
-
-let hideError = () => {
-    error.style.display = "none"
 }
 
 
@@ -114,6 +93,12 @@ let copyLink = async (e) => {
             buttonclicked.textContent = "Copied!"
 
         }
+
+        setTimeout(() => {
+            buttonclicked.style.backgroundColor = "Cyan";
+            buttonclicked.textContent = "Copy"
+        }, 2000);
+
         await navigator.clipboard.writeText(parentNode.querySelector("#generated-link").href);
 
     }
@@ -133,34 +118,8 @@ let showMobileNav = () => {
 
 shortLinkBtn.addEventListener("click", shortOriginalLink)
 
-userlink.addEventListener("input", hideError)
-
 menuBar.addEventListener("click", showMobileNav)
 
 workingSection.addEventListener("click", copyLink)
 
 
-// When the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    storedLinks = JSON.parse(localStorage.getItem("storedLinks")) || [];
-
-    // Display stored links on the page
-    for (const linkData of storedLinks) {
-        const template = document.querySelector(".template");
-        const clonedLinkSection = template.cloneNode(true);
-        clonedLinkSection.classList.remove("template");
-
-        const originalLinkElement = clonedLinkSection.querySelector("#original-link");
-        const generatedLinkElement = clonedLinkSection.querySelector("#generated-link");
-
-        originalLinkElement.href = linkData.originalLink;
-        originalLinkElement.textContent = linkData.originalLink;
-
-        generatedLinkElement.href = linkData.shortLink;
-        generatedLinkElement.textContent = linkData.shortLink;
-
-        clonedLinkSection.style.display = "flex";
-
-        workingSection.appendChild(clonedLinkSection);
-    }
-});
